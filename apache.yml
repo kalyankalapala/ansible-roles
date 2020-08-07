@@ -1,0 +1,16 @@
+---
+- hosts: apache-1, apache-2
+  tasks:
+  - name: Install httpd Package
+    yum: name=httpd state=latest
+  - name: Create index.html file
+    file: path=/var/www/html/index.html state=touch
+  - name: write content to index.html file
+    shell: echo "Welcome to the apache webserver" > /var/www/html/index.html
+    notify:
+    - restart apache
+  - name: Start and Enable httpd service
+    service: name=httpd state=restarted enabled=yes
+  handlers:
+  - name: restart apache
+    service: name=httpd state=restarted
