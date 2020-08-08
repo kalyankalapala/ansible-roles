@@ -1,5 +1,5 @@
 ---
-- hosts: apache-1, apache-2
+- hosts: apache
   tasks:
   - name: Install httpd Package
     yum: name=httpd state=latest
@@ -11,6 +11,11 @@
     - restart apache
   - name: Start and Enable httpd service
     service: name=httpd state=restarted enabled=yes
+  - name: verify that the web service is running
+    command: systemctl status httpd
+    register: result
+    ignore_errors: True
+  - debug: var=result
   handlers:
   - name: restart apache
     service: name=httpd state=restarted
